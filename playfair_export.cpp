@@ -1,12 +1,13 @@
 #include "playfair.h"
 
+// Экспорт для динамической библиотеки
 #ifdef _WIN32
     #define EXPORT __declspec(dllexport)
 #else
     #define EXPORT __attribute__((visibility("default")))
 #endif
 
-extern "C" {
+extern "C" {  // Отключаем C++ name mangling
 
 EXPORT const char* playfair_get_name_export(void) {
     return playfair_get_name();

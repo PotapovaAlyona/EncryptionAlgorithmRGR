@@ -11,6 +11,7 @@
 using namespace std;
 namespace fs = filesystem;
 
+// Прототипы функций шифров
 const char* vigenere_get_name(void);
 int vigenere_encrypt(ConstBuffer, ConstBuffer, MutBuffer*);
 int vigenere_decrypt(ConstBuffer, ConstBuffer, MutBuffer*);
@@ -18,13 +19,18 @@ const char* playfair_get_name(void);
 int playfair_encrypt(ConstBuffer, ConstBuffer, MutBuffer*);
 int playfair_decrypt(ConstBuffer, ConstBuffer, MutBuffer*);
 
+// ФУНКЦИИ 
+
+// Вывод данных в шестнадцатеричном формате
 void print_hex(const unsigned char* data, size_t size) {
     for (size_t i = 0; i < size; i++) printf("%02X", data[i]);
     printf("\n");
 }
 
+// Очистка буфера ввода
 void clear_input() { cin.clear(); cin.ignore(10000, '\n'); }
 
+// Вывод сообщения об ошибке по коду
 void error_msg(int code) {
     cout << "\n[ОШИБКА] ";
     switch(code) {
@@ -37,6 +43,7 @@ void error_msg(int code) {
     cout << endl;
 }
 
+// Генерация случайного ключа (символы ASCII 33-126)
 string generate_key(size_t len) {
     random_device rd;
     mt19937 gen(rd());
@@ -46,6 +53,7 @@ string generate_key(size_t len) {
     return key;
 }
 
+// Преобразование HEX строки в массив байт
 vector<unsigned char> hex_to_bytes(const string& hex) {
     vector<unsigned char> bytes;
     for (size_t i = 0; i + 1 < hex.length(); i += 2) {
@@ -57,6 +65,7 @@ vector<unsigned char> hex_to_bytes(const string& hex) {
     return bytes;
 }
 
+// Чтение файла в вектор байт
 bool read_file(const string& path, vector<unsigned char>& data) {
     ifstream f(path, ios::binary);
     if (!f) return false;
@@ -64,6 +73,7 @@ bool read_file(const string& path, vector<unsigned char>& data) {
     return true;
 }
 
+// Запись вектора байт в файл
 bool write_file(const string& path, const unsigned char* data, size_t size) {
     ofstream f(path, ios::binary);
     if (!f) return false;
@@ -71,12 +81,16 @@ bool write_file(const string& path, const unsigned char* data, size_t size) {
     return true;
 }
 
+// Создание директории для выходного файла
 bool create_dir(const string& path) {
     fs::path dir = fs::path(path).parent_path();
     if (!dir.empty() && !fs::exists(dir)) return fs::create_directories(dir);
     return true;
 }
 
+//  РАБОТА С КЛЮЧАМИ 
+
+// Получение ключа (ввод/файл/генерация)
 string get_key(int hint) {
     cout << "\n1) Ввести вручную\n2) Загрузить из файла\n3) Сгенерировать\nВыбор: ";
     string c; getline(cin, c);
@@ -105,6 +119,9 @@ string get_key(int hint) {
     return k;
 }
 
+//  ОПЕРАЦИИ ВИЖЕНЕР 
+
+// Шифрование/дешифрование текста Виженером
 void vigenere_text(int encrypt) {
     string text, key;
     unsigned char out[8192];
@@ -135,26 +152,7 @@ void vigenere_text(int encrypt) {
     else cout << string((char*)out, ob.size) << endl;
 }
 
-void playfair_text(int encrypt) {
-    string text, key;
-    unsigned char out[8192];
-    
-    if (encrypt) cout << "Текст (латиница): ";
-    else cout << "Шифротекст: ";
-    getline(cin, text);
-    
-    cout << "Ключ: "; getline(cin, key);
-    if (key.empty()) { error_msg(CRYPT_ERR_KEY); return; }
-    
-    ConstBuffer kb = {(unsigned char*)key.c_str(), key.size()};
-    ConstBuffer ib = {(unsigned char*)text.c_str(), text.size()};
-    MutBuffer ob = {out, sizeof(out)};
-    int res = encrypt ? playfair_encrypt(kb, ib, &ob) : playfair_decrypt(kb, ib, &ob);
-    
-    if (res) { error_msg(res); return; }
-    cout << "\nРезультат: " << string((char*)out, ob.size) << endl;
-}
-
+// Шифрование/дешифрование файла Виженером
 void vigenere_file(int encrypt) {
     string in, out, key;
     vector<unsigned char> data;
@@ -181,6 +179,30 @@ void vigenere_file(int encrypt) {
     else cout << "Сохранено " << ob.size << " байт\n";
 }
 
+// ОПЕРАЦИИ ПЛЕЙФЕР
+
+// Шифрование/дешифрование текста Плейфером
+void playfair_text(int encrypt) {
+    string text, key;
+    unsigned char out[8192];
+    
+    if (encrypt) cout << "Текст (латиница): ";
+    else cout << "Шифротекст: ";
+    getline(cin, text);
+    
+    cout << "Ключ: "; getline(cin, key);
+    if (key.empty()) { error_msg(CRYPT_ERR_KEY); return; }
+    
+    ConstBuffer kb = {(unsigned char*)key.c_str(), key.size()};
+    ConstBuffer ib = {(unsigned char*)text.c_str(), text.size()};
+    MutBuffer ob = {out, sizeof(out)};
+    int res = encrypt ? playfair_encrypt(kb, ib, &ob) : playfair_decrypt(kb, ib, &ob);
+    
+    if (res) { error_msg(res); return; }
+    cout << "\nРезультат: " << string((char*)out, ob.size) << endl;
+}
+
+// Шифрование/дешифрование файла Плейфером
 void playfair_file(int encrypt) {
     string in, out, key;
     vector<unsigned char> data;
@@ -207,6 +229,9 @@ void playfair_file(int encrypt) {
     else cout << "Сохранено " << ob.size << " байт\n";
 }
 
+// ГЕНЕРАТОР КЛЮЧЕЙ 
+
+// Генерация случайного ключа
 void key_generator() {
     cout << "Длина ключа: ";
     string l; getline(cin, l);
@@ -223,8 +248,10 @@ void key_generator() {
     }
 }
 
+//  ГЛАВНАЯ ФУНКЦИЯ 
+
 int main() {
-    cout << "=== КРИПТОГРАФИЧЕСКИЙ КАЛЬКУЛЯТОР ===\n";
+    cout << "= КРИПТОГРАФИЧЕСКИЙ КАЛЬКУЛЯТОР =\n";
     cout << "Виженер: любые символы, вывод в HEX\n";
     cout << "Плейфер: только латиница A-Z\n";
     
