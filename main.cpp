@@ -274,7 +274,7 @@ int main() {
             case 2: playfair_text(m == 1); break;
             case 3: vigenere_file(m == 1); break;
             case 4: playfair_file(m == 1); break;
-        }
+        }//
     }
     return 0;
 }
