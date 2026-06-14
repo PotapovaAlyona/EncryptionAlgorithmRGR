@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
-
-#include <cstddef>
-#include <cstdint>
+//общие заголовоч файлы
+#include <cstddef> //size_t
+#include <cstdint> //uint8_t
 
 #endif

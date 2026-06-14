@@ -1,31 +1,17 @@
 #include "playfair.h"
 
-#ifdef _WIN32
-    #define EXPORT __declspec(dllexport)
-#else
-    #define EXPORT __attribute__((visibility("default")))
-#endif
-
-extern "C" {
-
-EXPORT const char* playfair_get_name_export(void) {
-    return playfair_get_name();
+//возвр имя шифра
+const char* playfair_get_name(void) {
+    return "Playfair Cipher";
 }
 
-EXPORT size_t playfair_get_key_size_export(void) {
-    return playfair_get_key_size();
+//возвр размер ключа
+size_t playfair_get_key_size(void) {
+    return 0;
 }
 
-EXPORT size_t playfair_get_output_size_export(size_t input_size, int mode) {
-    return playfair_get_output_size(input_size, mode);
-}
-
-EXPORT int playfair_encrypt_export(ConstBuffer key, ConstBuffer input, MutBuffer* output) {
-    return playfair_encrypt(key, input, output);
-}
-
-EXPORT int playfair_decrypt_export(ConstBuffer key, ConstBuffer input, MutBuffer* output) {
-    return playfair_decrypt(key, input, output);
-}
-
+//возвр размер вых дан
+size_t playfair_get_output_size(size_t input_size, int mode) {
+    (void)mode;
+    return input_size * 2;
 }
