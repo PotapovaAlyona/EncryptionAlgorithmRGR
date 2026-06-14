@@ -1,7 +1,3 @@
-// main.cpp
-// Главный модуль криптографического калькулятора
-// Объединяет шифры: Виженер, Плейфер, Вернам (XOR), RSA
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -19,7 +15,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-// ==================== ПРОТОТИПЫ ФУНКЦИЙ ШИФРОВ ====================
+// =ФУНКЦИИ ШИФРОВ =
 
 // Виженер
 const char* vigenere_get_name(void);
@@ -42,10 +38,10 @@ int rsa_encrypt(ConstBuffer key, ConstBuffer input, MutBuffer* output);
 int rsa_decrypt(ConstBuffer key, ConstBuffer input, MutBuffer* output);
 int rsa_generate_keys(unsigned int* n, unsigned int* e, unsigned int* d);
 
-// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+// =ФУНКЦИИ
 
 // Единственный пароль для доступа к программе
-static const char* MASTER_PASSWORD = "crypto2024";
+static const char* MASTER_PASSWORD = "admin123";
 
 // Проверка, является ли символ печатным
 int is_printable(unsigned char c) {
@@ -146,7 +142,7 @@ int create_dir(const char* path) {
     return 1;
 }
 
-// ==================== АУТЕНТИФИКАЦИЯ ====================
+// = АУТЕНТИФИКАЦИЯ =
 
 int login() {
     char password[256];
@@ -167,7 +163,7 @@ int login() {
     return 0;
 }
 
-// ==================== КЛЮЧИ ВИЖЕНЕРА ====================
+// = КЛЮЧИ ВИЖЕНЕРА =
 
 int get_key_vigenere(char* key_buf, size_t buf_size, int hint) {
     char choice[16];
@@ -209,7 +205,7 @@ int get_key_vigenere(char* key_buf, size_t buf_size, int hint) {
     return 1;
 }
 
-// ==================== КЛЮЧИ ВЕРНАМ ====================
+// = КЛЮЧИ ВЕРНАМ =
 
 int get_key_vernam(char* key_buf, size_t buf_size) {
     char choice[16];
@@ -250,7 +246,7 @@ int get_key_vernam(char* key_buf, size_t buf_size) {
     return 1;
 }
 
-// ==================== ВИЖЕНЕР ====================
+// = ВИЖЕНЕР =
 
 void vigenere_text(int encrypt) {
     char text[8192];
@@ -330,7 +326,7 @@ void vigenere_file(int encrypt) {
     else cout << "Сохранено " << ob.size << " байт\n";
 }
 
-// ==================== ПЛЕЙФЕР ====================
+// = ПЛЕЙФЕР =
 
 void playfair_text(int encrypt) {
     char text[8192];
@@ -466,7 +462,7 @@ void playfair_file(int encrypt) {
     }
 }
 
-// ==================== ВЕРНАМ (XOR) - ИСПРАВЛЕННЫЙ ====================
+// = ВЕРНАМ (XOR)=
 
 void vernam_text(int encrypt) {
     char text[8192];
@@ -504,7 +500,7 @@ void vernam_text(int encrypt) {
         if (res != 0) { error_msg(res); return; }
         
         cout << "\nРезультат (HEX): ";
-        // Выводим ТОЛЬКО реальный размер (input.size)
+        // Выводим размер (input.size)
         print_hex(ob.data, ib.size);
         
     } else {
@@ -577,7 +573,7 @@ void vernam_file(int encrypt) {
     }
 }
 
-// ==================== RSA ====================
+// = RSA =
 
 void generate_rsa_keys_direct(unsigned int* n, unsigned int* e, unsigned int* d) {
     *n = 3233;
@@ -764,7 +760,7 @@ void rsa_process(int encrypt) {
     }
 }
 
-// ==================== ГЕНЕРАТОР СЛУЧАЙНОГО КЛЮЧА ====================
+// = ГЕНЕРАТОР СЛУЧАЙНОГО КЛЮЧА =
 
 void key_generator() {
     char len_str[16];
@@ -799,7 +795,7 @@ void key_generator() {
     }
 }
 
-// ==================== ГЛАВНАЯ ФУНКЦИЯ ====================
+// = ГЛАВНАЯ ФУНКЦИЯ =
 
 int main() {
     char choice_str[16];
